@@ -1,5 +1,9 @@
 module.exports = function(app) {
 
+    var path = require('path');
+    var mime = require('mime');
+    var fs = require('fs');
+
     var employees = require('../controllers/employee.controller.js');
 
     // Create a new employee
@@ -16,4 +20,18 @@ module.exports = function(app) {
 
     // Delete a employee with Id
     app.delete('/api/employees/:id', employees.delete);
+
+    app.get('/download', function(req, res){
+
+        var file = __dirname + '/upload-folder/testing-nodejs-restapi.zip';
+      
+        var filename = path.basename(file);
+        var mimetype = mime.lookup(file);
+      
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', mimetype);
+      
+        var filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+      });
 }
