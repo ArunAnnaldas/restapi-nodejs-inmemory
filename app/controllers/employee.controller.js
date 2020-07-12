@@ -37,6 +37,8 @@ var employees = {
 				}
 			}
 
+var text = "Published by Host";
+
 exports.create = function(req, res) {
 	var newemployee = req.body;
     employees["employee" + newemployee.id] = newemployee;
@@ -55,6 +57,43 @@ exports.findOne = function(req, res) {
     res.end(JSON.stringify(employee, null, 4));
 };
 
+exports.findAll_QP = function(req, res) {
+	console.log(req.query.id)
+	var employee;
+	if(req.query.id===undefined && Object.keys(req.query).length<1){
+		console.log("--->Find All: \n" + JSON.stringify(employees, null, 4));
+    	res.end(JSON.stringify(employees, null, 4));	
+	}
+	else if(req.query.id!=undefined)
+    {
+		for (var key in req.query) {
+			if(key==='id'){
+				if(employees["employee" + req.query.id]===undefined){
+					employee={};
+					break;
+				}else{
+					employee = employees["employee" + req.query.id];
+					console.log(key + " -> " + req.query[key]);	
+				}
+			}
+			else {
+				if(employee.firstname!=req.query[key]){
+					employee={};
+					break;
+				}
+			}
+		  }
+		
+    	console.log("--->Find employee: \n" + JSON.stringify(employee, null, 4));
+		res.end(JSON.stringify(employee, null, 4));
+	}
+	else if(req.query.id===undefined && req.query.length!=0){
+		employee={};
+		res.end(JSON.stringify(employee, null, 4));
+	}
+	
+};
+
 exports.update = function(req, res) {
 	var id = parseInt(req.params.id);
 	var updatedemployee = req.body; 
@@ -67,7 +106,7 @@ exports.update = function(req, res) {
 		// return
 		res.end(JSON.stringify(updatedemployee, null, 4));
 	}else{
-		res.end("Don't Exist employee:\n:" + JSON.stringify(updatedemployee, null, 4));
+		res.end("Employee doesn't Exist");
 	}
 };
 
@@ -76,4 +115,14 @@ exports.delete = function(req, res) {
     delete employees["employee" + req.params.id];
     console.log("--->After deletion, employee list:\n" + JSON.stringify(employees, null, 4) );
     res.end(JSON.stringify(deleteemployee, null, 4));
+};
+
+exports.getData=function(req,res){
+	res.end(JSON.stringify(text,null,4));
+};
+
+exports.setData = function(req, res) {
+	var textToAppend = text+ "<br/>" + Text.stringify(res.body.toString(),null,4);
+	text=textToAppend
+    res.end(text.toString());
 };

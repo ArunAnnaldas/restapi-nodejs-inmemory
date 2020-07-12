@@ -10,7 +10,9 @@ module.exports = function(app) {
     app.post('/api/employees', employees.create);
 
     // Retrieve all employee
-    app.get('/api/employees', employees.findAll);
+    //app.get('/api/employees/getAll', employees.findAll);
+
+    app.get('/api/employees', employees.findAll_QP);
 
     // Retrieve a single employee by Id
     app.get('/api/employees/:id', employees.findOne);
@@ -20,6 +22,10 @@ module.exports = function(app) {
 
     // Delete a employee with Id
     app.delete('/api/employees/:id', employees.delete);
+
+    app.get('/getData',employees.getData);
+
+    app.post('/postData',employees.setData);
 
     app.get('/download', function(req, res){
 
